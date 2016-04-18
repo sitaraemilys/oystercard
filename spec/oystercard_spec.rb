@@ -38,9 +38,29 @@ describe OysterCard do
 
     it 'sets #in_journey to true' do
       subject.touch_in
-      expect(subject.in_journey).to eq true
+      expect(subject.in_journey?).to be true
     end
 
   end
+
+  describe '#touch_out' do
+
+    it { is_expected.to respond_to(:touch_out) }
+
+    it 'sets #in_journey to false' do
+      subject.touch_in
+      subject.touch_out
+      expect(subject.in_journey?).to be false
+    end
+
+  end
+
+  # describe '#in_journey' do
+  #
+  #   it 'sets to false on initialize' do
+  #     expect(subject.in_journey?).to be false
+  #   end
+  # 
+  # end
 
 end
