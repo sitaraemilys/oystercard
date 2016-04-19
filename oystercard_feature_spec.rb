@@ -1,9 +1,10 @@
 require "./lib/oystercard.rb"
+require "./lib/station.rb"
 
 describe "Oystercard challenge" do
   let(:card) { Oystercard.new }
-  let(:entry_station) { double(:station) }
-  let(:exit_station) { double(:station) }
+  let(:entry_station) { Station.new("Entry Station", 1) }
+  let(:exit_station) { Station.new("Exit Station", 3) }
 
   context "a new card" do
 
@@ -71,4 +72,16 @@ describe "Oystercard challenge" do
       end
     end
   end
+
+  describe "finding station information" do
+    it "finds the zone" do
+      expect(entry_station.zone).to eq 1
+      expect(exit_station.zone).to eq 3
+    end
+    it "finds the name" do
+      expect(entry_station.name).to eq "Entry Station"
+      expect(exit_station.name).to eq "Exit Station"
+    end
+  end
+
 end
