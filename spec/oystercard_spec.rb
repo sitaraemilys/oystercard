@@ -14,23 +14,23 @@ describe OysterCard do
       expect{ subject.top_up 50 }.to change{ subject.balance }.by 50
     end
 
-    it 'raises an error if new balance would exceed MAXIMUM' do
-      message = "New balance exceeds #{OysterCard::MAXIMUM}!"
+    it 'raises an error if new balance would exceed MAXIMUM_BALANCE' do
+      message = "New balance exceeds #{OysterCard::MAXIMUM_BALANCE}!"
       expect{ subject.top_up 100 }.to raise_error message
     end
 
   end
 
-  describe '#deduct_fare' do
+  # describe '#deduct_fare' do
 
-  #  it { is_expected.to respond_to(:deduct_fare).with(1).argument }
+  # #  it { is_expected.to respond_to(:deduct_fare).with(1).argument }
 
-    it 'changes balance with deduct_fare amount' do
-      subject.top_up(40)
-      expect { subject.deduct_fare 20 }.to change { subject.balance }.by -20
-    end
+  #   it 'changes balance with deduct_fare amount' do
+  #     subject.top_up(40)
+  #     expect { subject.deduct_fare 20 }.to change { subject.balance }.by -20
+  #  end
 
-  end
+  # end
 
   describe '#touch_in' do
   #  before { allow(subject).to receive(:insufficient_balance?).and_return false }
@@ -42,7 +42,7 @@ describe OysterCard do
       expect(subject.in_journey?).to be true
     end
 
-    it 'fails if balance is less than MINIMUM' do
+    it 'fails if balance is less than MINIMUM_BALANCE' do
       message = "Insufficient balance!"
       expect{ subject.touch_in }.to raise_error message
     end
@@ -60,6 +60,11 @@ describe OysterCard do
       expect(subject.in_journey?).to be false
     end
 
+    it 'should deduct the fare from the balance' do
+      subject.top_up(10)
+      subject.touch_in
+      expect{ subject.touch_out }.to change { subject.balance }.by -OysterCard::MINIMUM_FARE
+    end
   end
 
   describe '#in_journey' do
