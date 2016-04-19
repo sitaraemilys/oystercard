@@ -2,14 +2,16 @@ require "oystercard"
 
 describe Oystercard do
   subject(:card) { described_class.new }
-  let(:station) { double(:station) }
-
-  it { is_expected.to respond_to(:entry_station) }
+  let(:entry_station) { double(:station) }
+  let(:exit_station) { double(:station) }
 
   describe "#initialize" do
     it { is_expected.not_to be_in_journey }
     it "has a starting balance" do
       expect(card.balance).to eq Oystercard::INITIAL_BALANCE
+    end
+    it "has an empty journey history" do
+      expect(card.journey_history).to be_empty
     end
   end
 
@@ -42,16 +44,18 @@ describe Oystercard do
       context "sufficient funds" do
         before { card.top_up Oystercard::MIN_FARE }
         it "starts a journey" do
-          expect { card.touch_in station }.to change { card.in_journey? }.to true
+          card.touch_in entry_station
+          expect(card.in_journey?).to be_truthy
         end
         it "records the entry station" do
-          expect { card.touch_in station }.to change { card.entry_station }.to station
+          card.touch_in entry_station
+          expect(card.entry_station).to eq entry_station
         end
       end
 
       context "insufficient funds" do
         it "raises an error" do
-          expect { card.touch_in station }.to raise_error Oystercard::MIN_BAL_ERR
+          expect { card.touch_in entry_station }.to raise_error Oystercard::MIN_BAL_ERR
         end
       end
     end
@@ -59,15 +63,22 @@ describe Oystercard do
 
   describe "#touch_out" do
     context "during a journey" do
-      before { card.top_up Oystercard::MIN_FARE; card.touch_in station }
+      before { card.top_up Oystercard::MIN_FARE; card.touch_in entry_station }
+      let(:journey) { {entry_station => exit_station} }
       it "ends the journey" do
-        expect { card.touch_out }.to change { card.in_journey? }.to false
+        card.touch_out exit_station
+        expect(card.in_journey?).to be_falsey
       end
       it "deducts the balance by minimum fare" do
-        expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MIN_FARE)
+        expect { card.touch_out exit_station }.to change { card.balance }.by(-Oystercard::MIN_FARE)
       end
       it "forgets the entry station" do
-        expect { card.touch_out }.to change { card.entry_station }.to nil
+        card.touch_out exit_station
+        expect(card.entry_station).to be_nil
+      end
+      it "adds the journey to the journey history" do
+        card.touch_out exit_station
+        expect(card.journey_history).to include journey
       end
     end
   end
