@@ -33,12 +33,18 @@ describe OysterCard do
   end
 
   describe '#touch_in' do
-
+  #  before { allow(subject).to receive(:insufficient_balance?).and_return false }
   #  it { is_expected.to respond_to(:touch_in) }
 
     it 'sets #in_journey to true' do
+      allow(subject).to receive(:insufficient_balance?).and_return false
       subject.touch_in
       expect(subject.in_journey?).to be true
+    end
+
+    it 'fails if balance is less than MINIMUM' do
+      message = "Insufficient balance!"
+      expect{ subject.touch_in }.to raise_error message
     end
 
   end
@@ -48,6 +54,7 @@ describe OysterCard do
   #  it { is_expected.to respond_to(:touch_out) }
 
     it 'sets #in_journey to false' do
+      allow(subject).to receive(:insufficient_balance?).and_return false
       subject.touch_in
       subject.touch_out
       expect(subject.in_journey?).to be false
@@ -55,12 +62,13 @@ describe OysterCard do
 
   end
 
-  # describe '#in_journey' do
-  #
-  #   it 'sets to false on initialize' do
-  #     expect(subject.in_journey?).to be false
-  #   end
-  #
-  # end
+  describe '#in_journey' do
+
+    it 'sets to false on initialize' do
+      expect(subject.in_journey?).to be false
+    end
+
+  end
+
 
 end

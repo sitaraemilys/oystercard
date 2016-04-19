@@ -2,6 +2,7 @@ class OysterCard
 
   DEFAULT_BALANCE = 0
   MAXIMUM = 90
+  MINIMUM = 1
 
   attr_reader :balance#, :in_journey?
 
@@ -21,11 +22,8 @@ class OysterCard
     @balance -= amount
   end
 
-  def limit_exceeded?(amount)
-    @balance + amount > MAXIMUM
-  end
-
   def touch_in
+    fail "Insufficient balance!" if insufficient_balance?
     @in_journey = true
   end
 
@@ -35,6 +33,16 @@ class OysterCard
 
   def in_journey?
     @in_journey
+  end
+
+  private
+
+  def limit_exceeded?(amount)
+    @balance + amount > MAXIMUM
+  end
+
+  def insufficient_balance?
+    @balance < MINIMUM
   end
 
 end
