@@ -3,8 +3,13 @@ require "oystercard"
 describe Oystercard do
   subject(:card) { described_class.new }
 
-  it "has a starting balance of zero" do
-    expect(card.balance).to eq Oystercard::INITIAL_BALANCE
+  describe "#initialize" do
+
+    it { is_expected.not_to be_in_journey }
+
+    it "has a starting balance" do
+      expect(card.balance).to eq Oystercard::INITIAL_BALANCE
+    end
   end
 
   describe "#top_up" do
@@ -37,13 +42,6 @@ describe Oystercard do
     let(:amount) { rand(20) }
     it "deducts the specified amount from the card" do
       expect { card.deduct amount }.to change{ card.balance }.by(-amount)
-    end
-  end
-
-  describe "#in_journey?" do
-
-    it "returns false on a new card" do
-      expect(card.in_journey?).to eq false
     end
   end
 

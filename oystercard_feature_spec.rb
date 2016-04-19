@@ -3,13 +3,14 @@ require "./lib/oystercard.rb"
 describe Oystercard do
   subject(:card) { Oystercard.new }
 
-  context "checking an initial balance" do
+  context "a new card" do
+
     it "is created with a balance of zero" do
       expect(card.balance).to eq Oystercard::INITIAL_BALANCE
     end
-  end
-  it "is not in a journey when created" do
-    expect(card.in_journey?).to eq false
+
+    it { is_expected.not_to be_in_journey }
+    
   end
 
   describe "topping up" do
