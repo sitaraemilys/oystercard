@@ -1,12 +1,10 @@
 require "oystercard"
 
 describe Oystercard do
-  subject(:oystercard) { described_class.new }
-
-  it{ is_expected.to respond_to(:deduct).with(1).argument }
+  subject(:card) { described_class.new }
 
   it "has a starting balance of zero" do
-    expect(oystercard.balance).to eq Oystercard::INITIAL_BALANCE
+    expect(card.balance).to eq Oystercard::INITIAL_BALANCE
   end
 
   describe "#top_up" do
@@ -14,29 +12,66 @@ describe Oystercard do
     context "adding a valid amount" do
       let(:amount) { rand(Oystercard::MAX_BALANCE) }
       it "tops up the balance with the specified amount" do
-        oystercard.top_up(amount)
-        expect(oystercard.balance).to eq amount
+        card.top_up(amount)
+        expect(card.balance).to eq amount
       end
     end
 
     context "exceeding the maximum balance" do
-      before { oystercard.top_up Oystercard::MAX_BALANCE }
+      before { card.top_up Oystercard::MAX_BALANCE }
       it "raises an error" do
-        expect{ oystercard.top_up 1 }.to raise_error Oystercard::MAX_BAL_ERR
+        expect{ card.top_up 1 }.to raise_error Oystercard::MAX_BAL_ERR
       end
       it "does not top up the balance" do
         begin
-          oystercard.top_up 1
+          card.top_up 1
         rescue
-          expect(oystercard.balance).to eq Oystercard::MAX_BALANCE
+          expect(card.balance).to eq Oystercard::MAX_BALANCE
         end
       end
     end
   end
+
   describe "#deduct" do
+
     let(:amount) { rand(20) }
     it "deducts the specified amount from the card" do
-      expect { oystercard.deduct amount }.to change{ oystercard.balance }.by(-amount)
+      expect { card.deduct amount }.to change{ card.balance }.by(-amount)
     end
   end
+
+  describe "#in_journey?" do
+
+    it "returns false on a new card" do
+      expect(card.in_journey?).to eq false
+    end
+  end
+
+  describe "#touch_in" do
+
+    context "outside a journey" do
+      it "starts a journey" do
+        expect { card.touch_in }.to change { card.in_journey? }.from(false).to(true)
+      end
+    end
+  end
+
+  describe "#touch_out" do
+
+    context "during a journey" do
+      before { card.touch_in }
+      it "ends the journey" do
+        expect { card.touch_out }.to change { card.in_journey? }.from(true).to(false)
+      end
+    end
+  end
+
+
+
+
+
+
+
+
+
 end
