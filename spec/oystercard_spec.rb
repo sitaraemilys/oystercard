@@ -2,14 +2,15 @@ require 'oystercard'
 
 describe OysterCard do
   let(:station){double :station}
+  let(:entry_station){double :station}
+  let(:exit_station){double :station}
+  let(:journey){{entry_station: entry_station, exit_station: exit_station}}
 
   it 'sets balance to DEFAULT_BALANCE if not otherwise specified' do
     expect(subject.balance).to eq OysterCard::DEFAULT_BALANCE
   end
 
   describe '#top_up' do
-
-  #  it { is_expected.to respond_to(:top_up).with(1).argument }
 
     it 'changes balance with top up amount' do
       expect{ subject.top_up 50 }.to change{ subject.balance }.by 50
@@ -22,21 +23,8 @@ describe OysterCard do
 
   end
 
-  # describe '#deduct_fare' do
-
-  # #  it { is_expected.to respond_to(:deduct_fare).with(1).argument }
-
-  #   it 'changes balance with deduct_fare amount' do
-  #     subject.top_up(40)
-  #     expect { subject.deduct_fare 20 }.to change { subject.balance }.by -20
-  #  end
-
-  # end
 
   describe '#touch_in' do
-  #  before { allow(subject).to receive(:insufficient_balance?).and_return false }
-  #  it { is_expected.to respond_to(:touch_in) }
-
     it 'sets #in_journey to true' do
       allow(subject).to receive(:insufficient_balance?).and_return false
       subject.touch_in(station)
@@ -56,12 +44,6 @@ describe OysterCard do
 
     it { is_expected.to respond_to(:touch_out).with(1).argument }
 
-    it 'should record the exit_station' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.exit_station).to be station
-    end
 
     it 'sets #in_journey to false' do
       allow(subject).to receive(:insufficient_balance?).and_return false
@@ -76,12 +58,6 @@ describe OysterCard do
       expect{ subject.touch_out(station) }.to change { subject.balance }.by -OysterCard::MINIMUM_FARE
     end
 
-    it 'should set entry_station to nil' do
-      subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-      expect(subject.entry_station).to be nil
-    end
   end
 
   describe '#in_journey' do
@@ -93,5 +69,12 @@ describe OysterCard do
   end
 
   it { expect(subject.journeys).to be_empty }
+
+  it 'records a single journey in journeys' do
+    subject.top_up(10)
+    subject.touch_in(entry_station)
+    subject.touch_out(exit_station)
+    expect(subject.journeys).to include journey
+  end
 
 end
