@@ -8,7 +8,7 @@ describe OysterCard do
 
   describe '#top_up' do
 
-    it { is_expected.to respond_to(:top_up).with(1).argument }
+  #  it { is_expected.to respond_to(:top_up).with(1).argument }
 
     it 'changes balance with top up amount' do
       expect{ subject.top_up 50 }.to change{ subject.balance }.by 50
@@ -23,7 +23,7 @@ describe OysterCard do
 
   describe '#deduct_fare' do
 
-    it { is_expected.to respond_to(:deduct_fare).with(1).argument }
+  #  it { is_expected.to respond_to(:deduct_fare).with(1).argument }
 
     it 'changes balance with deduct_fare amount' do
       subject.top_up(40)
@@ -34,7 +34,7 @@ describe OysterCard do
 
   describe '#touch_in' do
 
-    it { is_expected.to respond_to(:touch_in) }
+  #  it { is_expected.to respond_to(:touch_in) }
 
     it 'sets #in_journey to true' do
       subject.touch_in
@@ -45,7 +45,7 @@ describe OysterCard do
 
   describe '#touch_out' do
 
-    it { is_expected.to respond_to(:touch_out) }
+  #  it { is_expected.to respond_to(:touch_out) }
 
     it 'sets #in_journey to false' do
       subject.touch_in
@@ -60,7 +60,7 @@ describe OysterCard do
   #   it 'sets to false on initialize' do
   #     expect(subject.in_journey?).to be false
   #   end
-  # 
+  #
   # end
 
 end
