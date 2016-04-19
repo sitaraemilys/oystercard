@@ -1,6 +1,7 @@
 require 'oystercard'
 
 describe OysterCard do
+  let(:station){double :station}
 
   it 'sets balance to DEFAULT_BALANCE if not otherwise specified' do
     expect(subject.balance).to eq OysterCard::DEFAULT_BALANCE
@@ -38,14 +39,16 @@ describe OysterCard do
 
     it 'sets #in_journey to true' do
       allow(subject).to receive(:insufficient_balance?).and_return false
-      subject.touch_in
+      subject.touch_in(station)
       expect(subject.in_journey?).to be true
     end
 
     it 'fails if balance is less than MINIMUM_BALANCE' do
       message = "Insufficient balance!"
-      expect{ subject.touch_in }.to raise_error message
+      expect{ subject.touch_in(station) }.to raise_error message
     end
+
+    it { is_expected.to respond_to(:touch_in).with(1).argument }
 
   end
 
@@ -55,15 +58,22 @@ describe OysterCard do
 
     it 'sets #in_journey to false' do
       allow(subject).to receive(:insufficient_balance?).and_return false
-      subject.touch_in
+      subject.touch_in(station)
       subject.touch_out
       expect(subject.in_journey?).to be false
     end
 
     it 'should deduct the fare from the balance' do
       subject.top_up(10)
-      subject.touch_in
+      subject.touch_in(station)
       expect{ subject.touch_out }.to change { subject.balance }.by -OysterCard::MINIMUM_FARE
+    end
+
+    it 'should set entry_station to nil' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out
+      expect(subject.entry_station).to be nil
     end
   end
 
