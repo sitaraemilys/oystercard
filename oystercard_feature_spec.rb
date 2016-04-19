@@ -24,4 +24,11 @@ describe Oystercard do
       end
     end
   end
+
+  describe "deducting money" do
+    it "deducts the specified amount from the card" do
+      expect{ card.deduct 20 }.to change{ card.balance }.by(-20)
+      expect{ card.deduct 50 }.to change{ card.balance }.by(-50)
+    end
+  end
 end

@@ -3,6 +3,8 @@ require "oystercard"
 describe Oystercard do
   subject(:oystercard) { described_class.new }
 
+  it{ is_expected.to respond_to(:deduct).with(1).argument }
+
   it "has a starting balance of zero" do
     expect(oystercard.balance).to eq Oystercard::INITIAL_BALANCE
   end
@@ -29,6 +31,12 @@ describe Oystercard do
           expect(oystercard.balance).to eq Oystercard::MAX_BALANCE
         end
       end
+    end
+  end
+  describe "#deduct" do
+    let(:amount) { rand(20) }
+    it "deducts the specified amount from the card" do
+      expect { oystercard.deduct amount }.to change{ oystercard.balance }.by(-amount)
     end
   end
 end
