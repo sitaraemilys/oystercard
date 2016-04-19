@@ -5,12 +5,12 @@ describe Oystercard do
 
   context "a new card" do
 
-    it "is created with a balance of zero" do
+    it "is created with an initial balance" do
       expect(card.balance).to eq Oystercard::INITIAL_BALANCE
     end
 
     it { is_expected.not_to be_in_journey }
-    
+
   end
 
   describe "topping up" do
@@ -38,16 +38,24 @@ describe Oystercard do
 
   describe "touching in" do
     context "outside of a journey" do
-      it "starts a journey" do
-        expect { card.touch_in }.to change { card.in_journey? }.from(false).to(true)
+      context "sufficient funds" do
+        before { card.top_up Oystercard::MIN_BALANCE }
+        it "starts a journey" do
+          expect { card.touch_in }.to change { card.in_journey? }.to true
+        end
+      end
+      context "insufficient funds" do
+        it "raises an error" do
+          expect { card.touch_in }.to raise_error Oystercard::MIN_BAL_ERR
+        end
       end
     end
   end
   describe "touching out" do
     context "during a journey" do
-      before { card.touch_in }
+      before { card.top_up Oystercard::MIN_BALANCE; card.touch_in }
       it "ends the journey" do
-        expect { card.touch_out }.to change { card.in_journey? }.from(true).to(false)
+        expect { card.touch_out }.to change { card.in_journey? }.to false
       end
     end
   end

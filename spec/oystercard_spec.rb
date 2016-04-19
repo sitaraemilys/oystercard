@@ -4,16 +4,13 @@ describe Oystercard do
   subject(:card) { described_class.new }
 
   describe "#initialize" do
-
     it { is_expected.not_to be_in_journey }
-
     it "has a starting balance" do
       expect(card.balance).to eq Oystercard::INITIAL_BALANCE
     end
   end
 
   describe "#top_up" do
-
     context "adding a valid amount" do
       let(:amount) { rand(Oystercard::MAX_BALANCE) }
       it "tops up the balance with the specified amount" do
@@ -38,7 +35,6 @@ describe Oystercard do
   end
 
   describe "#deduct" do
-
     let(:amount) { rand(20) }
     it "deducts the specified amount from the card" do
       expect { card.deduct amount }.to change{ card.balance }.by(-amount)
@@ -46,30 +42,28 @@ describe Oystercard do
   end
 
   describe "#touch_in" do
-
     context "outside a journey" do
-      it "starts a journey" do
-        expect { card.touch_in }.to change { card.in_journey? }.from(false).to(true)
+      context "sufficient funds" do
+        before { card.top_up Oystercard::MIN_BALANCE }
+        it "starts a journey" do
+          expect { card.touch_in }.to change { card.in_journey? }.to true
+        end
+      end
+
+      context "insufficient funds" do
+        it "raises an error" do
+          expect { card.touch_in }.to raise_error Oystercard::MIN_BAL_ERR
+        end
       end
     end
   end
 
   describe "#touch_out" do
-
     context "during a journey" do
-      before { card.touch_in }
+      before { card.top_up Oystercard::MIN_BALANCE; card.touch_in }
       it "ends the journey" do
-        expect { card.touch_out }.to change { card.in_journey? }.from(true).to(false)
+        expect { card.touch_out }.to change { card.in_journey? }.to false
       end
     end
   end
-
-
-
-
-
-
-
-
-
 end
