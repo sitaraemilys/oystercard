@@ -52,27 +52,34 @@ describe OysterCard do
 
   end
 
-  describe '#touch_out' do
+  describe '#touch_out(station)' do
 
-  #  it { is_expected.to respond_to(:touch_out) }
+    it { is_expected.to respond_to(:touch_out).with(1).argument }
+
+    it 'should record the exit_station' do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+      expect(subject.exit_station).to be station
+    end
 
     it 'sets #in_journey to false' do
       allow(subject).to receive(:insufficient_balance?).and_return false
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.in_journey?).to be false
     end
 
     it 'should deduct the fare from the balance' do
       subject.top_up(10)
       subject.touch_in(station)
-      expect{ subject.touch_out }.to change { subject.balance }.by -OysterCard::MINIMUM_FARE
+      expect{ subject.touch_out(station) }.to change { subject.balance }.by -OysterCard::MINIMUM_FARE
     end
 
     it 'should set entry_station to nil' do
       subject.top_up(10)
       subject.touch_in(station)
-      subject.touch_out
+      subject.touch_out(station)
       expect(subject.entry_station).to be nil
     end
   end
@@ -85,5 +92,6 @@ describe OysterCard do
 
   end
 
+  it { expect(subject.journeys).to be_empty }
 
 end
