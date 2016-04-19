@@ -34,17 +34,10 @@ describe Oystercard do
     end
   end
 
-  describe "#deduct" do
-    let(:amount) { rand(20) }
-    it "deducts the specified amount from the card" do
-      expect { card.deduct amount }.to change{ card.balance }.by(-amount)
-    end
-  end
-
   describe "#touch_in" do
     context "outside a journey" do
       context "sufficient funds" do
-        before { card.top_up Oystercard::MIN_BALANCE }
+        before { card.top_up Oystercard::MIN_FARE }
         it "starts a journey" do
           expect { card.touch_in }.to change { card.in_journey? }.to true
         end
@@ -60,9 +53,12 @@ describe Oystercard do
 
   describe "#touch_out" do
     context "during a journey" do
-      before { card.top_up Oystercard::MIN_BALANCE; card.touch_in }
+      before { card.top_up Oystercard::MIN_FARE; card.touch_in }
       it "ends the journey" do
         expect { card.touch_out }.to change { card.in_journey? }.to false
+      end
+      it "deducts the balance by minimum fare" do
+        expect { card.touch_out }.to change { card.balance }.by(-Oystercard::MIN_FARE)
       end
     end
   end

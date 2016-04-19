@@ -1,10 +1,10 @@
 class Oystercard
 
   INITIAL_BALANCE = 0
-  MIN_BALANCE = 1
+  MIN_FARE = 1
   MAX_BALANCE = 90
   MAX_BAL_ERR = "Maximum balance is £#{MAX_BALANCE}"
-  MIN_BAL_ERR = "Minimum balance is £#{MIN_BALANCE}"
+  MIN_BAL_ERR = "Minimum balance is £#{MIN_FARE}"
 
   attr_reader :balance
 
@@ -22,10 +22,6 @@ class Oystercard
     @balance += amount
   end
 
-  def deduct amount
-    @balance -= amount
-  end
-
   def touch_in
     raise MIN_BAL_ERR if insufficient_funds?
     @in_journey = true
@@ -33,6 +29,7 @@ class Oystercard
 
   def touch_out
     @in_journey = false
+    deduct MIN_FARE
   end
 
   private
@@ -41,6 +38,11 @@ class Oystercard
   end
 
   def insufficient_funds?
-    balance < MIN_BALANCE
+    balance < MIN_FARE
   end
+
+  def deduct amount
+    @balance -= amount
+  end
+
 end
