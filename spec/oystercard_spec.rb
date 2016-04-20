@@ -9,8 +9,9 @@ describe Oystercard do
     it "has a starting balance" do
       expect(card.balance).to eq Oystercard::INITIAL_BALANCE
     end
-    it "has an empty journey history" do
-      expect(card.journey_history).to be_empty
+
+    it "creates a new journey" do
+      expect(card.journey).to be_a Journey
     end
   end
 
@@ -58,13 +59,13 @@ describe Oystercard do
         end
       end
 
-      context "in a journey" do
-        it 'raises error when two touch ins in a row' do
-          card.top_up(10)
-          card.touch_in(entry_station)
-          expect{ card.touch_in(entry_station) }.to raise_error "NO TOUCH OUT!"
-        end
-      end
+      # context "in a journey" do
+      #   it 'raises error when two touch ins in a row' do
+      #     card.top_up(10)
+      #     card.touch_in(entry_station)
+      #     expect{ card.touch_in(entry_station) }.to raise_error "NO TOUCH OUT!"
+      #   end
+      # end
     end
   end
 

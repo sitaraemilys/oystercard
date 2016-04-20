@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class Oystercard
 
   INITIAL_BALANCE = 0
@@ -7,11 +9,12 @@ class Oystercard
   MAX_BAL_ERR = "Maximum balance is £#{MAX_BALANCE}"
   MIN_BAL_ERR = "Minimum balance is £#{MIN_FARE}"
 
-  attr_reader :balance
+  attr_reader :balance, :journey
 
   def initialize
     @balance = INITIAL_BALANCE
     @journey_history = []
+    @journey = Journey.new
   end
 
   def in_journey?
@@ -24,7 +27,7 @@ class Oystercard
   end
 
   def touch_in entry_station
-    raise "NO TOUCH OUT!" if journey_history.include?(:start)
+    # raise "NO TOUCH OUT!" if journey_history.include?(:start)
     raise MIN_BAL_ERR if insufficient_funds?
     @journey_history << { :start => entry_station }
   end
@@ -35,7 +38,7 @@ class Oystercard
   end
 
   def journey_history
-    @journey_history.dup
+    @journey_history.dup #journey.history
   end
 
   private

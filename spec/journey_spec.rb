@@ -30,6 +30,7 @@ describe Journey do
     before {journey.end(exit_station)}
     it 'stores an exit station' do
       expect(journey.history.last[:end]).to eq exit_station
+      
     end
     it 'ends journey' do
       expect(journey.in_journey?).to eq false
