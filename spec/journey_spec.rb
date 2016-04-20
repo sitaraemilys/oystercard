@@ -11,7 +11,7 @@ describe Journey do
 
   describe '#initialize' do
     it 'has an empty journey history' do
-        expect(journey.journey_history).to be_empty
+        expect(journey.history).to be_empty
     end
 
     it 'is not in a journey' do
@@ -19,8 +19,17 @@ describe Journey do
     end
   end
 
+  describe '#start' do
+    it "stores an entry station" do
+      journey.start(entry_station)
+      expect(journey.history.last[:start]).to eq entry_station
+    end
+  end
+
+  describe '#end' do
 
 
+  end
 
   # describe '#touch_in' do
   #   context 'sufficient funds' do

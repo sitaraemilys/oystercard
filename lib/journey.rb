@@ -1,12 +1,17 @@
 class Journey
 
-attr_reader :journey_history
+attr_reader :history
 
   def initialize
-    @journey_history = []
+    @history = []
   end
 
   def in_journey?
+    !(@history.last.has_key?(:end))
+  end
+
+  def start(entry_station)
+    @history << {:start => entry_station}
   end
 
 end
