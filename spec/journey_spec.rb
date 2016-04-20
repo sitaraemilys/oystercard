@@ -13,47 +13,27 @@ describe Journey do
     it 'has an empty journey history' do
         expect(journey.history).to be_empty
     end
-
-    it 'is not in a journey' do
-      expect(journey.in_journey?).to eq false
-    end
   end
 
   describe '#start' do
-    it "stores an entry station" do
-      journey.start(entry_station)
+    before {journey.start(entry_station)}
+    it 'stores an entry station' do
       expect(journey.history.last[:start]).to eq entry_station
+    end
+    it 'starts journey' do
+      expect(journey.in_journey?).to eq true
     end
   end
 
   describe '#end' do
-
-
+    before {journey.start(entry_station)}
+    before {journey.end(exit_station)}
+    it 'stores an exit station' do
+      expect(journey.history.last[:end]).to eq exit_station
+    end
+    it 'ends journey' do
+      expect(journey.in_journey?).to eq false
+    end
   end
 
-  # describe '#touch_in' do
-  #   context 'sufficient funds' do
-  #     it 'starts a journey' do
-  #       min_balance_card.touch_in(entry_station)
-  #       expect
-  #     end
-  #   end
-
-
-
 end
-
-
-# describe "#touch_in" do
-#   context "outside a journey" do
-#     context "sufficient funds" do
-#       before { card.top_up Oystercard::MIN_FARE }
-#       it "starts a journey" do
-#         card.touch_in entry_station
-#         expect(card.in_journey?).to be_truthy
-#       end
-#       it "records the entry station" do
-#         card.touch_in entry_station
-#         expect(card.journey_history.last[:start]).to eq entry_station
-#       end
-#     end

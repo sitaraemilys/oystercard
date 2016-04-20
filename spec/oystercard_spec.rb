@@ -57,6 +57,14 @@ describe Oystercard do
           expect { card.touch_in entry_station }.to raise_error Oystercard::MIN_BAL_ERR
         end
       end
+
+      context "in a journey" do
+        it 'raises error when two touch ins in a row' do
+          card.top_up(10)
+          card.touch_in(entry_station)
+          expect{ card.touch_in(entry_station) }.to raise_error "NO TOUCH OUT!"
+        end
+      end
     end
   end
 

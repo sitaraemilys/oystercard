@@ -14,4 +14,8 @@ attr_reader :history
     @history << {:start => entry_station}
   end
 
+  def end(exit_station)
+    @history << {:end => exit_station}
+  end
+
 end

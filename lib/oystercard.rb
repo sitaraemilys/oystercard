@@ -3,6 +3,7 @@ class Oystercard
   INITIAL_BALANCE = 0
   MIN_FARE = 1
   MAX_BALANCE = 90
+  PENALTY_FARE = 6
   MAX_BAL_ERR = "Maximum balance is £#{MAX_BALANCE}"
   MIN_BAL_ERR = "Minimum balance is £#{MIN_FARE}"
 
@@ -23,6 +24,7 @@ class Oystercard
   end
 
   def touch_in entry_station
+    raise "NO TOUCH OUT!" if journey_history.include?(:start)
     raise MIN_BAL_ERR if insufficient_funds?
     @journey_history << { :start => entry_station }
   end
@@ -52,5 +54,9 @@ class Oystercard
   def last_journey
     @journey_history.last
   end
+
+  # def penalty_fare?
+  #   #journey_history.include?(:start)
+  # end
 
 end
