@@ -5,6 +5,8 @@ describe OysterCard do
   let(:entry_station){double :station}
   let(:exit_station){double :station}
   let(:journey){{entry_station: entry_station, exit_station: exit_station}}
+  let(:maximum_balance_error){"New balance exceeds #{OysterCard::MAXIMUM_BALANCE}!"}
+  let(:minimum_balance_error){"Insufficient balance!"}
 
   it 'sets balance to DEFAULT_BALANCE if not otherwise specified' do
     expect(subject.balance).to eq OysterCard::DEFAULT_BALANCE
@@ -16,11 +18,11 @@ describe OysterCard do
       expect{ subject.top_up 50 }.to change{ subject.balance }.by 50
     end
 
-    it 'raises an error if new balance would exceed MAXIMUM_BALANCE' do
-      message = "New balance exceeds #{OysterCard::MAXIMUM_BALANCE}!"
-      expect{ subject.top_up 100 }.to raise_error message
+    context 'exceeds MAXIMUM_BALANCE' do
+      it 'raises an error' do
+        expect{ subject.top_up 100 }.to raise_error maximum_balance_error
+      end
     end
-
   end
 
   describe '#touch_in' do
@@ -30,9 +32,10 @@ describe OysterCard do
       expect(subject.in_journey?).to be true
     end
 
-    it 'fails if balance is less than MINIMUM_BALANCE' do
-      message = "Insufficient balance!"
-      expect{ subject.touch_in(station) }.to raise_error message
+    context 'less than MINIMUM_BALANCE' do
+      it 'raises an error' do
+        expect{ subject.touch_in(station) }.to raise_error minimum_balance_error
+      end
     end
 
     it { is_expected.to respond_to(:touch_in).with(1).argument }
