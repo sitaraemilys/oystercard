@@ -13,12 +13,11 @@ class Oystercard
 
   def initialize
     @balance = INITIAL_BALANCE
-    @journey_history = []
-    @journey = Journey.new
+    @journey = Journey.new # we do not start a journey when we create a card
   end
 
   def in_journey?
-    !(last_journey.has_key?(:end))
+    journey.in_journey?
   end
 
   def top_up amount
@@ -27,19 +26,18 @@ class Oystercard
   end
 
   def touch_in entry_station
-    # raise "NO TOUCH OUT!" if journey_history.include?(:start)
+    #raise "NO TOUCH OUT!" if @journey.history.include?(:start)
     raise MIN_BAL_ERR if insufficient_funds?
-    @journey_history << { :start => entry_station }
+    @journey.start(entry_station)
+    #current journey = Journey.new(entry_starion exit_station)
   end
 
   def touch_out exit_station
     deduct MIN_FARE
-    last_journey[:end] = exit_station
+    @journey.end(exit_station)
+    #current journey update
   end
 
-  def journey_history
-    @journey_history.dup #journey.history
-  end
 
   private
   def top_up_too_large? amount
@@ -54,9 +52,9 @@ class Oystercard
     @balance -= amount
   end
 
-  def last_journey
-    @journey_history.last
-  end
+  # def entry_station_included?
+  #   #if @journey.history
+  # end
 
   # def penalty_fare?
   #   #journey_history.include?(:start)

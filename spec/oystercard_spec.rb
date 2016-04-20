@@ -44,13 +44,9 @@ describe Oystercard do
       context "sufficient funds" do
         before { card.top_up Oystercard::MIN_FARE }
         it "starts a journey" do
-          card.touch_in entry_station
-          expect(card.in_journey?).to be_truthy
-        end
-        it "records the entry station" do
-          card.touch_in entry_station
-          expect(card.journey_history.last[:start]).to eq entry_station
-        end
+           card.touch_in entry_station
+           expect(card.in_journey?).to be_truthy
+         end
       end
 
       context "insufficient funds" do
@@ -59,13 +55,13 @@ describe Oystercard do
         end
       end
 
-      # context "in a journey" do
-      #   it 'raises error when two touch ins in a row' do
-      #     card.top_up(10)
-      #     card.touch_in(entry_station)
-      #     expect{ card.touch_in(entry_station) }.to raise_error "NO TOUCH OUT!"
-      #   end
-      # end
+       context "in a journey" do
+          # it 'raises error when two touch ins in a row' do
+          #   card.top_up(10)
+          #   card.touch_in(entry_station)
+          #   expect{ card.touch_in(entry_station) }.to raise_error "NO TOUCH OUT!"
+          # end
+       end
     end
   end
 
@@ -73,17 +69,17 @@ describe Oystercard do
     context "during a journey" do
       before { card.top_up Oystercard::MIN_FARE; card.touch_in entry_station }
       let(:journey) { {:start => entry_station, :end => exit_station} }
-      it "ends the journey" do
-        card.touch_out exit_station
-        expect(card.in_journey?).to be_falsey
-      end
+       it "ends the journey" do
+         card.touch_out exit_station
+         expect(card.in_journey?).to be_falsey
+       end
       it "deducts the balance by minimum fare" do
         expect { card.touch_out exit_station }.to change { card.balance }.by(-Oystercard::MIN_FARE)
       end
-      it "adds the journey to the journey history" do
-        card.touch_out exit_station
-        expect(card.journey_history).to include journey
-      end
+      # it "adds the journey to the journey history" do
+      #   card.touch_out exit_station
+      #   expect(card.journey_history).to include journey
+      # end
     end
   end
 end
