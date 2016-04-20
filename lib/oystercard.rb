@@ -1,6 +1,6 @@
 require_relative 'journey'
 
-class Oystercard
+class OystercardSystem
 
   INITIAL_BALANCE = 0
   MIN_FARE = 1
@@ -37,7 +37,6 @@ class Oystercard
     @journey.end(exit_station)
     #current journey update
   end
-
 
   private
   def top_up_too_large? amount

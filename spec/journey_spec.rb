@@ -1,5 +1,4 @@
 require 'journey'
-
 describe Journey do
 
   subject(:journey) { described_class.new }
@@ -18,7 +17,7 @@ describe Journey do
   describe '#start' do
     before {journey.start(entry_station)}
     it 'stores an entry station' do
-      expect(journey.history.last[:start]).to eq entry_station
+      expect(journey.history[:start]).to eq entry_station
     end
     it 'starts journey' do
       expect(journey.in_journey?).to eq true
@@ -30,11 +29,31 @@ describe Journey do
     before {journey.start(entry_station)}
     before {journey.end(exit_station)}
     it 'stores an exit station' do
-      expect(journey.history.last[:end]).to eq exit_station
+      expect(journey.history[:end]).to eq exit_station
 
     end
     it 'ends journey' do
       expect(journey.in_journey?).to eq false
+    end
+  end
+
+  describe "#fare" do
+
+    it "returns minimum fare if touched in and touched out" do
+      journey.start(entry_station)
+      journey.end(exit_station)
+      expect(journey.fare).to eq described_class::MIN_FARE
+    end
+
+    it "returns penalty fare if no entry station" do
+      journey.end(exit_station)
+      expect(journey.fare).to eq described_class::PENALTY_FARE
+    end
+
+    it "returns penalty fare if no exit station" do
+      journey.start(entry_station)
+      journey.start(entry_station)
+      expect(journey.fare).to eq described_class::PENALTY_FARE
     end
   end
 
