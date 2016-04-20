@@ -26,7 +26,7 @@ describe OysterCard do
   end
 
   describe '#touch_in' do
-    it 'sets #in_journey to true' do
+    it 'sets #in_journey? to true' do
       allow(subject).to receive(:insufficient_balance?).and_return false
       subject.touch_in(station)
       expect(subject.in_journey?).to be true
