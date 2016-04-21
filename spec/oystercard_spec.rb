@@ -10,8 +10,8 @@ describe OystercardSystem do
       expect(card.balance).to eq OystercardSystem::INITIAL_BALANCE
     end
 
-    it "creates a new journey" do
-      expect(card.journey).to be_a Journey
+    it "creates a new journey log" do
+      expect(card.journeylog).to be_a JourneyLog
     end
   end
 
@@ -51,7 +51,7 @@ describe OystercardSystem do
 
       context "insufficient funds" do
         it "raises an error" do
-          expect { card.touch_in entry_station }.to raise_error OystercardSystem::MIN_BAL_ERR
+          expect { card.touch_in(entry_station) }.to raise_error OystercardSystem::MIN_BAL_ERR
         end
       end
 

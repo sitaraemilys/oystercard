@@ -9,11 +9,11 @@ class OystercardSystem
   MAX_BAL_ERR = "Maximum balance is £#{MAX_BALANCE}"
   MIN_BAL_ERR = "Minimum balance is £#{MIN_FARE}"
 
-  attr_reader :balance, :journey
+  attr_reader :balance, :journeylog
 
   def initialize
     @balance = INITIAL_BALANCE
-    @journey = Journey.new # we do not start a journey when we create a card
+    @journeylog = JourneyLog.new # we do not start a journey when we create a card
   end
 
   def in_journey?
