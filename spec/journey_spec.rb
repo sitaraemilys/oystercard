@@ -38,7 +38,6 @@ describe Journey do
   describe "#fare" do
 
     it "returns minimum fare if touched in and touched out" do
-      journey.start(entry_station)
       journey.end(exit_station)
       expect(journey.fare).to eq described_class::MIN_FARE
     end
@@ -57,7 +56,7 @@ describe Journey do
 
   describe '#complete?' do
     it "will return false if entry station has a value i.e. hasn't been reset" do
-      allow(journey).to receive(:entry_station).and_return(entry_station)
+      allow(journey).to receive(:entry_station).and_return entry_station
       expect(journey.complete?).to eq false
     end
 

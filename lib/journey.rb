@@ -9,9 +9,9 @@ PENALTY_FARE = 6
     @current = {}
   end
 
-  def in_journey?
-    !(@history.has_key?(:end))
-  end
+  # def in_journey?
+  #   !(@history.has_key?(:end))
+  # end
 
   def end(exit_station)
     @exit_station = exit_station
@@ -23,6 +23,6 @@ PENALTY_FARE = 6
   end
 
   def fare
-    history.has_key?(:start) && history.has_key?(:end) ? MIN_FARE : PENALTY_FARE
+   complete? ? MIN_FARE : PENALTY_FARE
   end
 end
