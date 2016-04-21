@@ -1,4 +1,5 @@
 require_relative 'journey'
+require_relative 'journeylog'
 
 class OystercardSystem
 
@@ -26,19 +27,30 @@ class OystercardSystem
   end
 
   def touch_in entry_station
-    #raise "NO TOUCH OUT!" if @journey.history.include?(:start)
-    raise MIN_BAL_ERR if insufficient_funds?
-    @journey.start(entry_station)
-    #current journey = Journey.new(entry_starion exit_station)
+    no_touch_out
+    @journeylog.start(entry_station)
   end
 
   def touch_out exit_station
-    deduct MIN_FARE
-    @journey.end(exit_station)
-    #current journey update
+    no_touch_in
+    @journeylog.end(exit_station)
   end
 
   private
+  def no_touch_in
+    if @journeylog.current_journey == nil
+      @journeylog.start(nil, @journeylog.exit_station)
+      deduct
+    end
+  end
+
+  def no_touch_out
+    if @journeylog.current_journey != nil
+      deduct
+      @journeylog.reset
+    end
+  end
+
   def top_up_too_large? amount
     (balance + amount) > MAX_BALANCE
   end
@@ -47,16 +59,9 @@ class OystercardSystem
     balance < MIN_FARE
   end
 
-  def deduct amount
-    @balance -= amount
+  def deduct
+    @balance -= @journeylog.current_journey.fare
   end
 
-  # def entry_station_included?
-  #   #if @journey.history
-  # end
-
-  # def penalty_fare?
-  #   #journey_history.include?(:start)
-  # end
 
 end

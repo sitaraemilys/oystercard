@@ -2,7 +2,7 @@ require_relative 'journey'
 
 class JourneyLog
 
-  attr_reader :history
+  attr_reader :history, :exit_station, :current_journey
 
   def initialize
      @history = []
@@ -12,14 +12,24 @@ class JourneyLog
     @current_journey.dup
   end
 
-  def start(entry_station)
-    @current_journey = Journey.new(entry_station) # current does not have anything in it
+  def start(entry_station=nil, exit_station=nil)
+    @current_journey = Journey.new(entry_station, exit_station) # current does not have anything in it
+    @exit_station = nil
   end
 
   def end(exit_station)
     current_journey.end(exit_station)
+    @exit_station = exit_station
+    log
+    reset
+  end
+
+  def reset
+    @current_journey = nil
+  end
+
+  def log
     @history << current_journey.current
-    @current_journey = nil # this needs to be moved to another method (reset), it is the last thing that end is returning
   end
 
   # def complete?
@@ -28,7 +38,6 @@ class JourneyLog
 
   private
 
-  attr_reader :current_journey
 
 
 end
