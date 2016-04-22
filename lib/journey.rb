@@ -1,4 +1,8 @@
 class Journey
+
+  MINIMUM_FARE = 1
+  PENALTY_FARE = 6
+
   attr_reader :current_journey
 
   def initialize
@@ -14,8 +18,9 @@ class Journey
     @current_journey[:exit_station] = station
   end
 
-  # def fare
-  # end
+  def fare
+    complete? ? MINIMUM_FARE : PENALTY_FARE
+  end
 
   def complete?
     journey_started? && journey_ended?

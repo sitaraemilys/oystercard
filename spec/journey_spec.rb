@@ -54,4 +54,18 @@ describe Journey do
 
   end
 
+  describe "#fare" do
+    it "charges minimum fare for a complete journey" do
+      subject.start(entry_station)
+      subject.finish(exit_station)
+      expect(subject.fare).to eq described_class::MINIMUM_FARE
+    end
+
+    it "charges penalty fare for an incomplete journey" do
+      subject.finish(exit_station)
+      expect(subject.fare).to eq described_class::PENALTY_FARE
+    end
+
+  end
+
 end
