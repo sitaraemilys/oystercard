@@ -1,3 +1,5 @@
+require_relative 'journey'
+
 class OysterCard
 
   DEFAULT_BALANCE = 0
@@ -20,16 +22,43 @@ class OysterCard
 
   def touch_in(station)
     fail "Insufficient balance!" if insufficient_balance?
+    no_touch_out
     @journey.start(station)
   end
 
   def touch_out(station)
-    deduct_fare(MINIMUM_FARE)
+    no_touch_in
     @journey.finish(station)
-    @journey_history << @journey.current_journey
+    log
+    reset
   end
 
   private
+
+  def no_touch_out
+    if @journey.current_journey != {}
+      deduct
+      @journey.current_journey[:exit_station] = nil
+      log
+      reset
+    end
+  end
+
+  def no_touch_in
+    if @current_journey == nil
+      deduct
+      @journey.current_journey[:entry_station] = nil
+      reset
+    end
+  end
+
+  def log
+    @journey_history << @journey.current_journey
+  end
+
+  def reset
+    @journey.current_journey = {}
+  end
 
   def limit_exceeded?(amount)
     @balance + amount > MAXIMUM_BALANCE
@@ -39,8 +68,8 @@ class OysterCard
     @balance < MINIMUM_BALANCE
   end
 
-  def deduct_fare(amount)
-    @balance -= amount
+  def deduct
+    @balance -= @journey.fare
   end
 
 end
