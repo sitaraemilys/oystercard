@@ -1,5 +1,6 @@
 require "./lib/oystercard.rb"
 require "./lib/station.rb"
+require "./lib/journey.rb"
 
 # fail "new oyster doesn't have £0 on it" unless oyster.balance == 0
 #
@@ -78,3 +79,18 @@ require "./lib/station.rb"
 # In order to be charged correctly
 # As a customer
 # I need a penalty charge deducted if I fail to touch in or out
+
+
+oyster = OysterCard.new
+oyster.top_up(50)
+
+entry = Station.new('Aldgate East', 3)
+exit = Station.new('Kensington', 1)
+
+oyster.touch_in(entry)
+oyster.touch_out(exit)
+
+journey = Journey.new
+
+journey.start(entry)
+

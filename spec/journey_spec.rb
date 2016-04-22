@@ -2,16 +2,56 @@ require 'journey'
 
 describe Journey do
 
-  subject {described_class.new('Bond Street')}
+  let(:entry_station){double(:entry_station)}
+  let(:exit_station){double(:exit_station)}
 
   describe '#initialize' do
 
-    it 'record an entry station' do
-      expect(subject.entry).to eq true
+    it "should create an empty 'current_journey' hash" do
+      expect(subject.current_journey).to eq ({})
     end
 
-    it 'should store entry stations' do
-      expect(subject.trip).to eq({:entry_station => 'Bond Street'})
-    end
   end
+
+  describe "#start" do
+
+    it "should store the entry station in @current_journey" do
+      subject.start(entry_station)
+      expect(subject.current_journey).to include ({:entry_station => entry_station})
+    end
+
+
+  end
+
+  describe "#finish" do
+
+    it { is_expected.to respond_to(:finish).with(1).argument }
+
+    it "should store the exit station in @current_journey" do
+      subject.finish(exit_station)
+      expect(subject.current_journey).to include ({:exit_station => exit_station})
+    end
+
+  end
+
+  describe "#complete?" do
+
+    it "should return true for a complete journey" do
+      subject.start(entry_station)
+      subject.finish(exit_station)
+      expect(subject.complete?).to eq true
+    end
+
+    it "should return false if there's no exit station" do
+      subject.start(entry_station)
+      expect(subject.complete?).to eq false
+    end
+
+    it "should return false if there's no exit station" do
+      subject.finish(entry_station)
+      expect(subject.complete?).to eq false
+    end
+
+  end
+
 end
